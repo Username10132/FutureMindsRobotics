@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type MouseEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   ArrowUpRight,
@@ -62,20 +62,28 @@ function Logo() {
 }
 
 function RobotIllustration() {
+  const [look, setLook] = useState({ x: 0, y: 0 });
+  const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2));
+    const y = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - 0.5) * 2));
+    setLook({ x, y });
+  };
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[540px]" aria-label="Illustration of a cheerful competition robot">
+    <div className="relative mx-auto aspect-square w-full max-w-[540px]" onMouseMove={handleMouseMove} onMouseLeave={() => setLook({ x: 0, y: 0 })} aria-label="Interactive illustration of a cheerful competition robot">
       <div className="hero-orbit absolute inset-[8%] rounded-full border border-dashed border-[hsl(var(--primary)/.35)]" />
       <div className="hero-orbit absolute inset-[17%] rounded-full border border-[hsl(var(--secondary)/.65)]" style={{ animationDelay: '-5s' }} />
       <span className="float-slow absolute left-[8%] top-[24%] h-4 w-4 rounded-sm bg-[hsl(var(--accent))] shadow-[3px_3px_0_hsl(var(--foreground))]" />
       <span className="float-slower absolute right-[12%] top-[13%] h-6 w-6 rotate-12 rounded-full border-4 border-[hsl(var(--secondary))]" />
       <span className="float-slow absolute bottom-[18%] left-[17%] h-5 w-5 rotate-45 bg-[hsl(var(--primary))]" />
-      <div className="absolute left-1/2 top-1/2 w-[58%] -translate-x-1/2 -translate-y-1/2 rotate-[-4deg]">
+      <div className="absolute left-1/2 top-1/2 w-[58%] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 ease-out" style={{ transform: `translate(-50%, -50%) rotate(${look.x * 3 - 4}deg) translate(${look.x * 6}px, ${look.y * 4}px)` }}>
         <div className="absolute -bottom-7 left-[8%] h-5 w-[84%] rounded-full bg-[hsl(var(--foreground)/.3)] blur-md" />
         <div className="relative rounded-[2.2rem] border-[5px] border-[hsl(var(--foreground))] bg-[hsl(var(--secondary))] p-3 shadow-[10px_10px_0_hsl(var(--foreground))]">
           <div className="flex h-28 items-center justify-center rounded-[1.5rem] border-[3px] border-[hsl(var(--foreground))] bg-[hsl(var(--card))]">
             <div className="flex gap-5">
-              <span className="relative h-10 w-10 rounded-full border-[4px] border-[hsl(var(--foreground))] bg-[hsl(var(--primary))] after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-3 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[hsl(var(--card))]" />
-              <span className="relative h-10 w-10 rounded-full border-[4px] border-[hsl(var(--foreground))] bg-[hsl(var(--primary))] after:absolute after:left-1/2 after:top-1/2 after:h-3 after:w-3 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full after:bg-[hsl(var(--card))]" />
+              {[0, 1].map((eye) => <span key={eye} className="relative h-10 w-10 rounded-full border-[4px] border-[hsl(var(--foreground))] bg-[hsl(var(--primary))]">
+                <span className="absolute left-1/2 top-1/2 h-3 w-3 rounded-full bg-[hsl(var(--card))] transition-transform duration-75 ease-out" style={{ transform: `translate(calc(-50% + ${look.x * 5}px), calc(-50% + ${look.y * 4}px))` }} />
+              </span>)}
             </div>
           </div>
           <div className="mx-auto mt-2 h-5 w-3/5 rounded-b-lg border-x-[3px] border-b-[3px] border-[hsl(var(--foreground))] bg-[hsl(var(--accent))]" />
@@ -88,7 +96,7 @@ function RobotIllustration() {
         <div className="absolute -top-[5.25rem] left-1/2 h-5 w-5 -translate-x-1/2 rounded-full border-4 border-[hsl(var(--foreground))] bg-[hsl(var(--accent))]" />
       </div>
       <div className="absolute bottom-[9%] right-[2%] rounded-xl border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] px-3 py-2 font-mono-custom text-[10px] font-medium shadow-[4px_4px_0_hsl(var(--foreground))]">
-        <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />RUN: CURIOUS
+        <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />MOVE TO EXPLORE
       </div>
     </div>
   );
@@ -201,7 +209,7 @@ function Home() {
             <div className="max-w-2xl">
               <div className="mb-7 flex items-center gap-3 font-mono-custom text-[10px] font-medium tracking-[.12em]"><span className="h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />A STUDENT-LED NONPROFIT · EST. 2023</div>
               <h1 id="hero-title" className="font-display text-balance text-[clamp(3.7rem,9vw,7.8rem)] font-bold leading-[.86] tracking-[-.08em]">Make room<br /><span className="text-[hsl(var(--primary))]">for wonder.</span></h1>
-              <p className="mt-8 max-w-lg text-lg leading-relaxed text-[hsl(var(--foreground)/.78)] sm:text-xl">Future Minds Robotics is where high school mentors help grades 4–8 turn “what if?” into working code, clever machines, and the confidence to keep going.</p>
+              <p className="mt-8 max-w-lg text-lg leading-relaxed text-[hsl(var(--foreground)/.78)] sm:text-xl">We are a student-led nonprofit where high school mentors help grades 4–8 turn “what if?” into working code, clever machines, and the confidence to keep going.</p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
                 <a href="#experience" className="group inline-flex items-center gap-3 rounded-full bg-[hsl(var(--foreground))] px-5 py-3.5 font-semibold text-[hsl(var(--card))] shadow-[4px_4px_0_hsl(var(--primary))] transition-transform hover:-translate-y-1" data-testid="link-hero-experience">See the experience <MoveRight size={18} className="transition-transform group-hover:translate-x-1" /></a>
                 <button onClick={() => openModal('volunteer')} className="inline-flex items-center gap-2 rounded-full border-2 border-[hsl(var(--foreground))] px-5 py-3 font-semibold transition-colors hover:bg-[hsl(var(--foreground)/.1)]" data-testid="button-hero-volunteer">Join the build <ArrowUpRight size={17} /></button>
