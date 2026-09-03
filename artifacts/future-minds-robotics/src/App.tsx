@@ -219,10 +219,10 @@ function Home() {
           <div className="section-wrap grid gap-14 lg:grid-cols-[.8fr_1.2fr] lg:gap-24">
             <SectionHeading eyebrow="01 / The point" title={<>Confidence is a <span className="text-[hsl(var(--primary))]">buildable</span> skill.</>} body="We make the first step into STEM feel less like a test and more like an invitation. A student gets to be the person with the answer — then the person who helps someone else find theirs." />
             <div ref={storyRef} className="reveal grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[1.7rem] border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--primary))] p-7 text-[hsl(var(--primary-foreground))] shadow-[6px_6px_0_hsl(var(--foreground))] sm:translate-y-10">
+              <div className="rounded-[1.7rem] border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--primary))] p-7 text-[hsl(var(--primary-foreground))] shadow-[6px_6px_0_hsl(var(--foreground))]">
                 <Lightbulb size={27} strokeWidth={1.7} />
-                <p className="mt-16 font-display text-3xl font-bold leading-none tracking-[-.05em]">Curiosity<br />gets a kit.</p>
-                <p className="mt-4 text-sm leading-relaxed opacity-80">Every session starts with a question worth chasing.</p>
+                <p className="mt-16 font-display text-3xl font-bold leading-none tracking-[-.05em]">Questions<br />become builds.</p>
+                <p className="mt-4 text-sm leading-relaxed opacity-80">Every session starts with something worth making.</p>
               </div>
               <div className="rounded-[1.7rem] border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] p-7 shadow-[6px_6px_0_hsl(var(--foreground))]">
                 <UsersRound size={27} strokeWidth={1.7} />
