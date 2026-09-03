@@ -76,24 +76,47 @@ function RobotIllustration() {
       <span className="float-slow absolute left-[8%] top-[24%] h-4 w-4 rounded-sm bg-[hsl(var(--accent))] shadow-[3px_3px_0_hsl(var(--foreground))]" />
       <span className="float-slower absolute right-[12%] top-[13%] h-6 w-6 rotate-12 rounded-full border-4 border-[hsl(var(--secondary))]" />
       <span className="float-slow absolute bottom-[18%] left-[17%] h-5 w-5 rotate-45 bg-[hsl(var(--primary))]" />
-      <div className="absolute left-1/2 top-1/2 w-[58%] -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 ease-out" style={{ transform: `translate(-50%, -50%) rotate(${look.x * 3 - 4}deg) translate(${look.x * 6}px, ${look.y * 4}px)` }}>
-        <div className="absolute -bottom-7 left-[8%] h-5 w-[84%] rounded-full bg-[hsl(var(--foreground)/.3)] blur-md" />
-        <div className="relative rounded-[2.2rem] border-[5px] border-[hsl(var(--foreground))] bg-[hsl(var(--secondary))] p-3 shadow-[10px_10px_0_hsl(var(--foreground))]">
-          <div className="flex h-28 items-center justify-center rounded-[1.5rem] border-[3px] border-[hsl(var(--foreground))] bg-[hsl(var(--card))]">
-            <div className="flex gap-5">
-              {[0, 1].map((eye) => <span key={eye} className="relative h-10 w-10 rounded-full border-[4px] border-[hsl(var(--foreground))] bg-[hsl(var(--primary))]">
-                <span className="absolute left-1/2 top-1/2 h-3 w-3 rounded-full bg-[hsl(var(--card))] transition-transform duration-75 ease-out" style={{ transform: `translate(calc(-50% + ${look.x * 5}px), calc(-50% + ${look.y * 4}px))` }} />
-              </span>)}
-            </div>
-          </div>
-          <div className="mx-auto mt-2 h-5 w-3/5 rounded-b-lg border-x-[3px] border-b-[3px] border-[hsl(var(--foreground))] bg-[hsl(var(--accent))]" />
-        </div>
-        <div className="mx-auto flex w-3/4 justify-between px-1">
-          <span className="h-12 w-7 rounded-b-xl border-x-[4px] border-b-[4px] border-[hsl(var(--foreground))] bg-[hsl(var(--primary))]" />
-          <span className="h-12 w-7 rounded-b-xl border-x-[4px] border-b-[4px] border-[hsl(var(--foreground))] bg-[hsl(var(--primary))]" />
-        </div>
-        <div className="absolute -top-16 left-1/2 h-16 w-2 -translate-x-1/2 bg-[hsl(var(--foreground))]" />
-        <div className="absolute -top-[5.25rem] left-1/2 h-5 w-5 -translate-x-1/2 rounded-full border-4 border-[hsl(var(--foreground))] bg-[hsl(var(--accent))]" />
+      <div className="absolute inset-[5%] flex items-center justify-center">
+        <svg viewBox="0 0 640 560" className="h-full w-full overflow-visible" role="img" aria-label="Cheerful orange competition robot">
+          <defs>
+            <filter id="robot-shadow" x="-30%" y="-30%" width="160%" height="180%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
+              <feOffset dx="0" dy="12" result="offsetblur" />
+              <feComponentTransfer><feFuncA type="linear" slope=".28" /></feComponentTransfer>
+              <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          <circle cx="320" cy="280" r="220" fill="none" stroke="hsl(var(--foreground) / .12)" strokeWidth="1.5" />
+          <circle cx="320" cy="280" r="184" fill="none" stroke="hsl(var(--primary) / .28)" strokeWidth="1.5" strokeDasharray="2 14" />
+          <circle cx="104" cy="162" r="8" fill="hsl(var(--accent))" />
+          <circle cx="527" cy="112" r="12" fill="none" stroke="hsl(var(--secondary))" strokeWidth="5" />
+          <rect x="113" y="397" width="16" height="16" rx="2" fill="hsl(var(--primary))" transform="rotate(45 121 405)" />
+          <g className="transition-transform duration-200 ease-out" style={{ transform: `translate(${look.x * 4}px, ${look.y * 3}px) rotate(${look.x * 1.4 - 2}deg)`, transformOrigin: '320px 300px' }}>
+            <ellipse cx="320" cy="477" rx="148" ry="18" fill="hsl(var(--foreground) / .22)" filter="url(#robot-shadow)" />
+            <rect x="310" y="70" width="20" height="82" rx="10" fill="hsl(var(--foreground))" />
+            <circle cx="320" cy="61" r="22" fill="hsl(var(--accent))" stroke="hsl(var(--foreground))" strokeWidth="7" />
+            <circle cx="320" cy="61" r="6" fill="hsl(var(--card))" />
+            <rect x="152" y="149" width="336" height="218" rx="58" fill="hsl(var(--foreground))" transform="translate(9 10)" />
+            <rect x="152" y="140" width="336" height="218" rx="58" fill="hsl(var(--secondary))" stroke="hsl(var(--foreground))" strokeWidth="8" filter="url(#robot-shadow)" />
+            <rect x="177" y="169" width="286" height="116" rx="34" fill="hsl(var(--card))" stroke="hsl(var(--foreground))" strokeWidth="6" />
+            <g>
+              {[246, 394].map((cx) => <g key={cx}>
+                <circle cx={cx} cy="227" r="30" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="6" />
+                <circle cx={cx} cy="227" r="10" fill="hsl(var(--card))" style={{ transform: `translate(${look.x * 7}px, ${look.y * 5}px)` }} />
+              </g>)}
+            </g>
+            <path d="M278 305 Q320 334 362 305" fill="none" stroke="hsl(var(--foreground))" strokeWidth="8" strokeLinecap="round" />
+            <path d="M282 305 Q320 326 358 305" fill="none" stroke="hsl(var(--accent))" strokeWidth="8" strokeLinecap="round" />
+            <rect x="116" y="210" width="24" height="88" rx="12" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="7" />
+            <circle cx="128" cy="199" r="14" fill="hsl(var(--accent))" stroke="hsl(var(--foreground))" strokeWidth="7" />
+            <rect x="500" y="210" width="24" height="88" rx="12" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="7" />
+            <circle cx="512" cy="199" r="14" fill="hsl(var(--accent))" stroke="hsl(var(--foreground))" strokeWidth="7" />
+            <rect x="208" y="354" width="44" height="96" rx="20" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="7" />
+            <rect x="388" y="354" width="44" height="96" rx="20" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="7" />
+            <circle cx="230" cy="453" r="13" fill="hsl(var(--foreground))" />
+            <circle cx="410" cy="453" r="13" fill="hsl(var(--foreground))" />
+          </g>
+        </svg>
       </div>
       <div className="absolute bottom-[9%] right-[2%] rounded-xl border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] px-3 py-2 font-mono-custom text-[10px] font-medium shadow-[4px_4px_0_hsl(var(--foreground))]">
         <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />MOVE TO EXPLORE
