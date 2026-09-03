@@ -110,25 +110,32 @@ function ContactModal({ kind, onClose }: { kind: Exclude<ModalKind, null>; onClo
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
   const title = kind === 'volunteer' ? 'Bring your good questions.' : 'Say hello to the team.';
   const intro = kind === 'volunteer' ? 'Tell us what you’re excited to share. We’ll follow up with a small, friendly next step.' : 'We read every note. Families, teachers, neighbors, and curious humans are all welcome.';
   if (sent) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[hsl(var(--foreground)/.7)] p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div onClick={(event) => { if (event.target === event.currentTarget) onClose(); }} className="fixed inset-0 z-50 flex items-center justify-center bg-[hsl(var(--foreground)/.7)] p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div className="noisy relative w-full max-w-lg overflow-hidden rounded-[2rem] border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--secondary))] p-8 shadow-[10px_10px_0_hsl(var(--foreground))] sm:p-12">
-          <button onClick={onClose} className="absolute right-5 top-5 rounded-full p-2 hover:bg-[hsl(var(--foreground)/.1)]" aria-label="Close message" data-testid="button-close-success"><X size={20} /></button>
+          <button type="button" onClick={onClose} className="absolute right-5 top-5 z-10 inline-flex items-center gap-2 rounded-full border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] px-3 py-2 text-sm font-semibold transition-transform hover:-translate-y-0.5" aria-label="Close message" data-testid="button-close-success"><X size={17} /> Close</button>
           <div className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))]"><Send size={24} /></div>
           <h2 id="modal-title" className="font-display text-4xl font-bold tracking-[-.05em]">Message in the air.</h2>
           <p className="mt-4 text-lg leading-relaxed">Thanks, {name || 'friend'}. Your note is ready to send. We’ll be in touch soon.</p>
-          <button onClick={onClose} className="mt-8 inline-flex items-center gap-2 rounded-full bg-[hsl(var(--foreground))] px-5 py-3 font-semibold text-[hsl(var(--card))] transition-transform hover:-translate-y-0.5" data-testid="button-done-contact">Done <ArrowUpRight size={17} /></button>
+          <button type="button" onClick={onClose} className="mt-8 inline-flex items-center gap-2 rounded-full bg-[hsl(var(--foreground))] px-5 py-3 font-semibold text-[hsl(var(--card))] transition-transform hover:-translate-y-0.5" data-testid="button-done-contact">Back to website <ArrowUpRight size={17} /></button>
         </div>
       </div>
     );
   }
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[hsl(var(--foreground)/.7)] p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div onClick={(event) => { if (event.target === event.currentTarget) onClose(); }} className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[hsl(var(--foreground)/.7)] p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div className="noisy relative my-5 w-full max-w-xl overflow-hidden rounded-[2rem] border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] p-6 shadow-[10px_10px_0_hsl(var(--foreground))] sm:p-10">
-        <button onClick={onClose} className="absolute right-5 top-5 rounded-full p-2 hover:bg-[hsl(var(--muted))]" aria-label="Close contact form" data-testid="button-close-contact"><X size={20} /></button>
+        <button type="button" onClick={onClose} className="absolute right-5 top-5 z-10 inline-flex items-center gap-2 rounded-full border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] px-3 py-2 text-sm font-semibold transition-transform hover:-translate-y-0.5" aria-label="Close contact form" data-testid="button-close-contact"><X size={17} /> Close</button>
         <p className="eyebrow text-[hsl(var(--primary))]">OPEN CHANNEL / 01</p>
         <h2 id="modal-title" className="font-display mt-4 pr-10 text-4xl font-bold tracking-[-.05em]">{title}</h2>
         <p className="mt-3 max-w-md leading-relaxed text-[hsl(var(--muted-foreground))]">{intro}</p>
@@ -145,6 +152,7 @@ function ContactModal({ kind, onClose }: { kind: Exclude<ModalKind, null>; onClo
           <label className="block text-sm font-semibold">Email address<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 block w-full rounded-xl border-2 border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-3 outline-none transition-colors focus:border-[hsl(var(--primary))]" placeholder="you@example.com" data-testid="input-contact-email" /></label>
           <label className="block text-sm font-semibold">A few words<textarea required value={message} onChange={(event) => setMessage(event.target.value)} className="mt-2 block min-h-28 w-full resize-y rounded-xl border-2 border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-3 outline-none transition-colors focus:border-[hsl(var(--primary))]" placeholder={kind === 'volunteer' ? 'I’d love to help by...' : 'I’m curious about...'} data-testid="input-contact-message" /></label>
           <button type="submit" className="group mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[hsl(var(--primary))] px-5 py-3.5 font-semibold text-[hsl(var(--primary-foreground))] shadow-[4px_4px_0_hsl(var(--foreground))] transition-transform hover:-translate-y-0.5" data-testid="button-submit-contact">Send the note <Send size={17} className="transition-transform group-hover:translate-x-1" /></button>
+           <button type="button" onClick={onClose} className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[hsl(var(--foreground))] px-5 py-3 font-semibold transition-colors hover:bg-[hsl(var(--muted))]" data-testid="button-back-to-website">Back to website <ArrowUpRight size={17} /></button>
         </form>
       </div>
     </div>
@@ -169,6 +177,7 @@ function Home() {
             <a href="#why" className="nav-link" data-testid="link-nav-why">Why it matters</a>
             <a href="#experience" className="nav-link" data-testid="link-nav-experience">The experience</a>
             <a href="#team" className="nav-link" data-testid="link-nav-team">Team 62281</a>
+            <a href="https://hcb.hackclub.com/donations/start/futureminds-robotics" target="_blank" rel="noreferrer" className="nav-link" data-testid="link-nav-donate">Donate</a>
             <button onClick={() => openModal('volunteer')} className="inline-flex items-center gap-2 rounded-full bg-[hsl(var(--foreground))] px-4 py-2.5 text-[hsl(var(--card))] transition-transform hover:-translate-y-0.5" data-testid="button-nav-join">Get involved <ArrowUpRight size={15} /></button>
           </div>
           <button onClick={() => setMenuOpen((open) => !open)} className="rounded-xl border-2 border-[hsl(var(--foreground))] p-2.5 md:hidden" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} data-testid="button-mobile-menu">{menuOpen ? <X size={20} /> : <Menu size={20} />}</button>
@@ -178,6 +187,7 @@ function Home() {
             <a href="#why" onClick={closeMenu} className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-why">Why it matters</a>
             <a href="#experience" onClick={closeMenu} className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-experience">The experience</a>
             <a href="#team" onClick={closeMenu} className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-team">Team 62281</a>
+             <a href="https://hcb.hackclub.com/donations/start/futureminds-robotics" target="_blank" rel="noreferrer" className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-donate">Donate</a>
             <button onClick={() => openModal('volunteer')} className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-[hsl(var(--primary))] px-4 py-3 font-semibold text-[hsl(var(--primary-foreground))]" data-testid="button-mobile-join">Get involved <ArrowUpRight size={15} /></button>
           </div>
         </div>}
@@ -294,7 +304,7 @@ function Home() {
             </div>
             <div className="mt-16 grid gap-4 md:grid-cols-3">
               <button onClick={() => openModal('volunteer')} className="group text-left rounded-[1.7rem] border-2 border-[hsl(var(--primary-foreground)/.3)] p-7 transition-colors hover:bg-[hsl(var(--primary-foreground)/.1)]" data-testid="button-involved-volunteer"><HeartHandshake size={27} /><h3 className="mt-20 font-display text-3xl font-bold tracking-[-.05em]">Volunteer</h3><p className="mt-3 text-sm leading-relaxed opacity-70">Share a skill, lend a hand, or help a young builder feel seen.</p><span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[hsl(var(--secondary))]">Start a conversation <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></span></button>
-               <a href="https://hcb.hackclub.com/donations/start/futureminds-robotics" target="_blank" rel="noreferrer" className="group text-left rounded-[1.7rem] border-2 border-[hsl(var(--primary-foreground)/.3)] p-7 transition-colors hover:bg-[hsl(var(--primary-foreground)/.1)]" data-testid="link-involved-support"><Sparkles size={27} /><h3 className="mt-20 font-display text-3xl font-bold tracking-[-.05em]">Support</h3><p className="mt-3 text-sm leading-relaxed opacity-70">Help us keep the kits stocked and the invitation wide open.</p><span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[hsl(var(--secondary))]">Donate to the team <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></span></a>
+               <a href="https://hcb.hackclub.com/donations/start/futureminds-robotics" target="_blank" rel="noreferrer" className="group text-left rounded-[1.7rem] border-2 border-[hsl(var(--primary-foreground)/.3)] p-7 transition-colors hover:bg-[hsl(var(--primary-foreground)/.1)]" data-testid="link-involved-support"><Sparkles size={27} /><h3 className="mt-20 font-display text-3xl font-bold tracking-[-.05em]">Donate</h3><p className="mt-3 text-sm leading-relaxed opacity-70">Help us keep the kits stocked and the invitation wide open.</p><span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[hsl(var(--secondary))]">Support the team <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></span></a>
               <button onClick={() => openModal('contact')} className="group text-left rounded-[1.7rem] border-2 border-[hsl(var(--primary-foreground)/.3)] p-7 transition-colors hover:bg-[hsl(var(--primary-foreground)/.1)]" data-testid="button-involved-connect"><MessageCircle size={27} /><h3 className="mt-20 font-display text-3xl font-bold tracking-[-.05em]">Connect</h3><p className="mt-3 text-sm leading-relaxed opacity-70">Bring us to your school, club, library, or community table.</p><span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[hsl(var(--secondary))]">Say hello <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" /></span></button>
             </div>
           </div>
