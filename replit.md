@@ -1,6 +1,6 @@
-# [Project name]
+# Future Minds Robotics
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Future Minds Robotics is a student-led nonprofit website connecting grades 4–8 students with coding and robotics learning through FIRST LEGO League Challenge Team 62281.
 
 ## Run & Operate
 
@@ -22,23 +22,27 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/future-minds-robotics/src/App.tsx` — single-page nonprofit website experience and interactions
+- `artifacts/future-minds-robotics/src/index.css` — visual theme, responsive layout, and motion styles
+- `artifacts/future-minds-robotics/index.html` — document metadata and social sharing descriptions
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The public experience is a frontend-only single page because the first goal is communicating the mission and driving community engagement.
+- Contact, volunteer, and support flows use accessible in-page interactions so visitors can take action without leaving the site.
+- The visual language intentionally combines workshop energy with a clear editorial reading experience to reflect both student creativity and nonprofit credibility.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Visitors can understand the Future Minds mission, explore the grades 4–8 learning experience, meet Team 62281, and open contact, volunteer, or support flows.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- The organization is called Future Minds Robotics and competes in FIRST LEGO League Challenge as Team 62281.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Keep the site copy grounded in the provided organization details; do not invent program claims, schedules, contact details, or impact metrics.
 
 ## Pointers
 

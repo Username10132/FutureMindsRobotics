@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Future Minds Robotics"
+description = "A vibrant nonprofit website for Future Minds Robotics, a student-led organization teaching grades 4–8 coding and robotics through the FIRST LEGO League Challenge program as Team 62281."
+version = "1.0.0"
+id = "artifacts/future-minds-robotics"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25478
+
+[services.development]
+run = "pnpm --filter @workspace/future-minds-robotics run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/future-minds-robotics", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/future-minds-robotics/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25478"
+BASE_PATH = "/"
