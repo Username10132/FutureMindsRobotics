@@ -337,7 +337,7 @@ function Home() {
           <div className="absolute -right-20 top-20 h-[450px] w-[450px] rounded-full border border-[hsl(var(--foreground)/.12)]" />
           <div className="section-wrap relative grid items-center gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-4">
             <div className="max-w-2xl">
-              <div className="mb-7 flex items-center gap-3 font-mono-custom text-[10px] font-medium tracking-[.12em]"><span className="h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />A STUDENT-LED NONPROFIT · EST. 2026</div>
+              <div className="mb-7 flex items-center gap-3 font-mono-custom text-[10px] font-medium tracking-[.12em]"><span className="h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />TEAM 62281 SINCE 2023 · NONPROFIT ESTABLISHED 2026</div>
               <h1 id="hero-title" className="font-display text-balance text-[clamp(3.7rem,9vw,7.8rem)] font-bold leading-[.86] tracking-[-.08em]">Make room<br /><span className="text-[hsl(var(--primary))]">for wonder.</span></h1>
               <p className="mt-8 max-w-lg text-lg leading-relaxed text-[hsl(var(--foreground)/.78)] sm:text-xl">We are a student-led nonprofit where high school mentors help grades 4–8 turn “what if?” into working code, clever machines, and the confidence to keep going.</p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -465,7 +465,7 @@ function Home() {
              <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[hsl(var(--card)/.55)]"><a href="mailto:hzaanoun23@gmail.com" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-email">hzaanoun23@gmail.com</a><a href="tel:+16403576683" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-phone">+1 640 357 6683</a></div>
            </div>
         </div>
-        <div className="section-wrap mt-10 flex flex-col justify-between gap-2 border-t border-[hsl(var(--card)/.15)] pt-5 font-mono-custom text-[9px] tracking-[.12em] text-[hsl(var(--card)/.4)] sm:flex-row"><span>© 2025 FUTURE MINDS ROBOTICS</span><span>BUILT WITH CURIOSITY / TEAM 62281</span></div>
+        <div className="section-wrap mt-10 flex flex-col justify-between gap-2 border-t border-[hsl(var(--card)/.15)] pt-5 font-mono-custom text-[9px] tracking-[.12em] text-[hsl(var(--card)/.4)] sm:flex-row"><span>© 2026 FUTURE MINDS ROBOTICS</span><span>BUILT WITH CURIOSITY / TEAM 62281</span></div>
       </footer>
       {modal && <ContactModal kind={modal} onClose={() => setModal(null)} />}
     </div>
