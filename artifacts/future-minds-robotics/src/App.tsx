@@ -1,4 +1,4 @@
-import { type MouseEvent, type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   ArrowUpRight,
@@ -61,65 +61,126 @@ function Logo() {
   );
 }
 
-function RobotIllustration() {
-  const [look, setLook] = useState({ x: 0, y: 0 });
-  const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width - 0.5) * 2));
-    const y = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height - 0.5) * 2));
-    setLook({ x, y });
-  };
+type Point = { x: number; y: number };
+type TrackSegment = { id: number; leftStart: Point; leftEnd: Point; rightStart: Point; rightEnd: Point; born: number; opacity: number };
+
+function ChasingRobot() {
+  const [bot, setBot] = useState({ x: 0, y: 0, angle: 0, ready: false });
+  const [tracks, setTracks] = useState<TrackSegment[]>([]);
+  const currentRef = useRef<Point>({ x: 0, y: 0 });
+  const targetRef = useRef<Point>({ x: 0, y: 0 });
+  const trackRef = useRef<TrackSegment[]>([]);
+  const headingRef = useRef(0);
+
+  useEffect(() => {
+    const start = { x: window.innerWidth * 0.73, y: window.innerHeight * 0.43 };
+    currentRef.current = start;
+    targetRef.current = start;
+    setBot({ ...start, angle: 0, ready: true });
+
+    let frame = 0;
+    let nextId = 0;
+    let lastPaint = 0;
+    const handlePointerMove = (event: PointerEvent) => {
+      targetRef.current = { x: event.clientX, y: event.clientY };
+    };
+    const update = (now: number) => {
+      const current = currentRef.current;
+      const target = targetRef.current;
+      const dx = target.x - current.x;
+      const dy = target.y - current.y;
+      const distance = Math.hypot(dx, dy);
+      let moved = 0;
+
+      if (distance > 0.2) {
+        const step = Math.min(8, distance * 0.085);
+        const next = { x: current.x + (dx / distance) * step, y: current.y + (dy / distance) * step };
+        const moveX = next.x - current.x;
+        const moveY = next.y - current.y;
+        moved = Math.hypot(moveX, moveY);
+        const normal = { x: -moveY / moved, y: moveX / moved };
+        const wheelGap = 7;
+        trackRef.current.push({
+          id: nextId++,
+          leftStart: { x: current.x + normal.x * wheelGap, y: current.y + normal.y * wheelGap },
+          leftEnd: { x: next.x + normal.x * wheelGap, y: next.y + normal.y * wheelGap },
+          rightStart: { x: current.x - normal.x * wheelGap, y: current.y - normal.y * wheelGap },
+          rightEnd: { x: next.x - normal.x * wheelGap, y: next.y - normal.y * wheelGap },
+          born: now,
+          opacity: 0.62,
+        });
+        if (trackRef.current.length > 260) trackRef.current.splice(0, trackRef.current.length - 260);
+        currentRef.current = next;
+        headingRef.current = Math.atan2(moveY, moveX) * (180 / Math.PI) + 90;
+      }
+
+      trackRef.current = trackRef.current.filter((segment) => now - segment.born < 900);
+      const visibleTracks = trackRef.current.map((segment) => {
+        const age = now - segment.born;
+        const fade = age < 520 ? 1 : Math.max(0, 1 - (age - 520) / 380);
+        return { ...segment, opacity: segment.opacity * fade };
+      });
+      if (moved > 0.2 || now - lastPaint > 24) {
+        setBot({ ...currentRef.current, angle: headingRef.current, ready: true });
+        setTracks(visibleTracks);
+        lastPaint = now;
+      }
+      frame = requestAnimationFrame(update);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    frame = requestAnimationFrame(update);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[540px]" onMouseMove={handleMouseMove} onMouseLeave={() => setLook({ x: 0, y: 0 })} aria-label="Interactive illustration of a cheerful competition robot">
+    <>
+      <svg className="pointer-events-none fixed inset-0 z-20 h-full w-full overflow-visible" aria-hidden="true">
+        {tracks.map((segment) => <g key={segment.id} opacity={segment.opacity}>
+          <line x1={segment.leftStart.x} y1={segment.leftStart.y} x2={segment.leftEnd.x} y2={segment.leftEnd.y} stroke="hsl(var(--foreground) / .48)" strokeWidth="5" strokeLinecap="round" />
+          <line x1={segment.rightStart.x} y1={segment.rightStart.y} x2={segment.rightEnd.x} y2={segment.rightEnd.y} stroke="hsl(var(--foreground) / .48)" strokeWidth="5" strokeLinecap="round" />
+        </g>)}
+      </svg>
+      {bot.ready && <div className="pointer-events-none fixed left-0 top-0 z-30" style={{ left: bot.x, top: bot.y, transform: `translate(-50%, -50%) rotate(${bot.angle}deg)` }}>
+        <svg viewBox="0 0 180 140" className="h-auto w-28 overflow-visible sm:w-36" role="img" aria-label="Small overhead LEGO SPIKE Prime driving base chasing the cursor">
+          <ellipse cx="90" cy="118" rx="58" ry="8" fill="hsl(var(--foreground) / .2)" />
+          <circle cx="35" cy="70" r="28" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="4" />
+          <circle cx="35" cy="70" r="20" fill="#12b7ca" stroke="#0e8e9f" strokeWidth="4" />
+          <circle cx="35" cy="70" r="10" fill="#111827" />
+          <circle cx="145" cy="70" r="28" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="4" />
+          <circle cx="145" cy="70" r="20" fill="#12b7ca" stroke="#0e8e9f" strokeWidth="4" />
+          <circle cx="145" cy="70" r="10" fill="#111827" />
+          <rect x="30" y="28" width="120" height="84" rx="12" fill="#d70b87" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <rect x="37" y="34" width="106" height="10" rx="5" fill="#f2349d" />
+          <rect x="37" y="96" width="106" height="10" rx="5" fill="#f2349d" />
+          <circle cx="45" cy="27" r="5" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="135" cy="27" r="5" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <rect x="59" y="39" width="62" height="62" rx="9" fill="#f8f4e8" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <rect x="64" y="77" width="52" height="19" rx="3" fill="#f3c323" />
+          <circle cx="90" cy="55" r="7" fill="#d8d3c6" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="90" cy="55" r="2.5" fill="#111827" />
+          <rect x="24" y="51" width="12" height="38" rx="5" fill="#11b7c9" stroke="hsl(var(--foreground))" strokeWidth="4" />
+          <rect x="144" y="51" width="12" height="38" rx="5" fill="#11b7c9" stroke="hsl(var(--foreground))" strokeWidth="4" />
+          <rect x="64" y="18" width="52" height="9" rx="4" fill="#f3c323" stroke="hsl(var(--foreground))" strokeWidth="3" />
+        </svg>
+      </div>}
+    </>
+  );
+}
+
+function HeroDriveField() {
+  return (
+    <div className="relative mx-auto aspect-square w-full max-w-[540px]" aria-hidden="true">
       <div className="hero-orbit absolute inset-[8%] rounded-full border border-dashed border-[hsl(var(--primary)/.35)]" />
       <div className="hero-orbit absolute inset-[17%] rounded-full border border-[hsl(var(--secondary)/.65)]" style={{ animationDelay: '-5s' }} />
       <span className="float-slow absolute left-[8%] top-[24%] h-4 w-4 rounded-sm bg-[hsl(var(--accent))] shadow-[3px_3px_0_hsl(var(--foreground))]" />
       <span className="float-slower absolute right-[12%] top-[13%] h-6 w-6 rotate-12 rounded-full border-4 border-[hsl(var(--secondary))]" />
       <span className="float-slow absolute bottom-[18%] left-[17%] h-5 w-5 rotate-45 bg-[hsl(var(--primary))]" />
-      <div className="absolute inset-[5%] flex items-center justify-center">
-        <svg viewBox="0 0 640 560" className="h-full w-full overflow-visible" role="img" aria-label="Cheerful orange competition robot">
-          <defs>
-            <filter id="robot-shadow" x="-30%" y="-30%" width="160%" height="180%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="8" />
-              <feOffset dx="0" dy="12" result="offsetblur" />
-              <feComponentTransfer><feFuncA type="linear" slope=".28" /></feComponentTransfer>
-              <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
-          <circle cx="320" cy="280" r="220" fill="none" stroke="hsl(var(--foreground) / .12)" strokeWidth="1.5" />
-          <circle cx="320" cy="280" r="184" fill="none" stroke="hsl(var(--primary) / .28)" strokeWidth="1.5" strokeDasharray="2 14" />
-          <circle cx="104" cy="162" r="8" fill="hsl(var(--accent))" />
-          <circle cx="527" cy="112" r="12" fill="none" stroke="hsl(var(--secondary))" strokeWidth="5" />
-          <rect x="113" y="397" width="16" height="16" rx="2" fill="hsl(var(--primary))" transform="rotate(45 121 405)" />
-          <g className="transition-transform duration-200 ease-out" style={{ transform: `translate(${look.x * 4}px, ${look.y * 3}px) rotate(${look.x * 1.4 - 2}deg)`, transformOrigin: '320px 300px' }}>
-            <ellipse cx="320" cy="477" rx="148" ry="18" fill="hsl(var(--foreground) / .22)" filter="url(#robot-shadow)" />
-            <rect x="310" y="70" width="20" height="82" rx="10" fill="hsl(var(--foreground))" />
-            <circle cx="320" cy="61" r="22" fill="hsl(var(--accent))" stroke="hsl(var(--foreground))" strokeWidth="7" />
-            <circle cx="320" cy="61" r="6" fill="hsl(var(--card))" />
-            <rect x="152" y="149" width="336" height="218" rx="58" fill="hsl(var(--foreground))" transform="translate(9 10)" />
-            <rect x="152" y="140" width="336" height="218" rx="58" fill="hsl(var(--secondary))" stroke="hsl(var(--foreground))" strokeWidth="8" filter="url(#robot-shadow)" />
-            <rect x="177" y="169" width="286" height="116" rx="34" fill="hsl(var(--card))" stroke="hsl(var(--foreground))" strokeWidth="6" />
-            <g>
-              {[246, 394].map((cx) => <g key={cx}>
-                <circle cx={cx} cy="227" r="30" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="6" />
-                <circle cx={cx} cy="227" r="10" fill="hsl(var(--card))" style={{ transform: `translate(${look.x * 7}px, ${look.y * 5}px)` }} />
-              </g>)}
-            </g>
-            <path d="M278 305 Q320 334 362 305" fill="none" stroke="hsl(var(--foreground))" strokeWidth="8" strokeLinecap="round" />
-            <path d="M282 305 Q320 326 358 305" fill="none" stroke="hsl(var(--accent))" strokeWidth="8" strokeLinecap="round" />
-            <rect x="116" y="210" width="24" height="88" rx="12" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="7" />
-            <circle cx="128" cy="199" r="14" fill="hsl(var(--accent))" stroke="hsl(var(--foreground))" strokeWidth="7" />
-            <rect x="500" y="210" width="24" height="88" rx="12" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="7" />
-            <circle cx="512" cy="199" r="14" fill="hsl(var(--accent))" stroke="hsl(var(--foreground))" strokeWidth="7" />
-            <rect x="208" y="354" width="44" height="96" rx="20" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="7" />
-            <rect x="388" y="354" width="44" height="96" rx="20" fill="hsl(var(--primary))" stroke="hsl(var(--foreground))" strokeWidth="7" />
-            <circle cx="230" cy="453" r="13" fill="hsl(var(--foreground))" />
-            <circle cx="410" cy="453" r="13" fill="hsl(var(--foreground))" />
-          </g>
-        </svg>
-      </div>
       <div className="absolute bottom-[9%] right-[2%] rounded-xl border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] px-3 py-2 font-mono-custom text-[10px] font-medium shadow-[4px_4px_0_hsl(var(--foreground))]">
-        <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />MOVE TO EXPLORE
+        <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />SPIKE PRIME / DRIVE BASE
       </div>
     </div>
   );
