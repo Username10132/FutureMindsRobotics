@@ -37,7 +37,7 @@ jobs:
         run: pnpm run build
         env:
           PORT: 5000
-          BASE_PATH: /futureminds-robotics-1/
+          BASE_PATH: /FutureMindsRobotics/
 
       - uses: actions/upload-pages-artifact@v3
         with:
