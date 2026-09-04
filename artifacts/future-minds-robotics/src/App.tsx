@@ -68,6 +68,7 @@ type RobotMode = 'on' | 'returning' | 'parked';
 function ChasingRobot() {
   const [bot, setBot] = useState({ x: 0, y: 0, angle: 0, ready: false });
   const [mode, setMode] = useState<RobotMode>('on');
+  const [footerVisible, setFooterVisible] = useState(false);
   const [tracks, setTracks] = useState<TrackSegment[]>([]);
   const currentRef = useRef<Point>({ x: 0, y: 0 });
   const targetRef = useRef<Point>({ x: 0, y: 0 });
