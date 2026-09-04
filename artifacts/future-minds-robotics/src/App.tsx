@@ -179,26 +179,34 @@ function ChasingRobot() {
         </g>)}
       </svg>
       {bot.ready && <div className="pointer-events-none absolute left-0 top-0 z-30" style={{ left: bot.x, top: bot.y, transform: `translate(-50%, -50%) rotate(${bot.angle}deg)` }}>
-        <svg viewBox="0 0 180 140" className="h-auto w-28 overflow-visible sm:w-36" role="img" aria-label="Small overhead LEGO SPIKE Prime driving base chasing the cursor">
-          <ellipse cx="90" cy="118" rx="58" ry="8" fill="hsl(var(--foreground) / .2)" />
-          <circle cx="24" cy="70" r="32" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="4" />
-          <circle cx="24" cy="70" r="24" fill="#12b7ca" stroke="#0e8e9f" strokeWidth="4" />
-          <circle cx="24" cy="70" r="11" fill="#111827" />
-          <circle cx="156" cy="70" r="32" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="4" />
-          <circle cx="156" cy="70" r="24" fill="#12b7ca" stroke="#0e8e9f" strokeWidth="4" />
-          <circle cx="156" cy="70" r="11" fill="#111827" />
-          <rect x="36" y="28" width="108" height="84" rx="12" fill="#d70b87" stroke="hsl(var(--foreground))" strokeWidth="5" />
-          <rect x="43" y="34" width="94" height="10" rx="5" fill="#f2349d" />
-          <rect x="43" y="96" width="94" height="10" rx="5" fill="#f2349d" />
-          <circle cx="47" cy="27" r="5" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
-          <circle cx="133" cy="27" r="5" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
-          <rect x="59" y="39" width="62" height="62" rx="9" fill="#f8f4e8" stroke="hsl(var(--foreground))" strokeWidth="5" />
-          <rect x="64" y="77" width="52" height="19" rx="3" fill="#f3c323" />
-          <circle cx="90" cy="55" r="7" fill="#d8d3c6" stroke="hsl(var(--foreground))" strokeWidth="3" />
-          <circle cx="90" cy="55" r="2.5" fill="#111827" />
-          <rect x="24" y="51" width="12" height="38" rx="5" fill="#11b7c9" stroke="hsl(var(--foreground))" strokeWidth="4" />
-          <rect x="144" y="51" width="12" height="38" rx="5" fill="#11b7c9" stroke="hsl(var(--foreground))" strokeWidth="4" />
-          <rect x="64" y="18" width="52" height="9" rx="4" fill="#f3c323" stroke="hsl(var(--foreground))" strokeWidth="3" />
+        <svg viewBox="0 0 240 180" className="h-auto w-32 overflow-visible sm:w-40" role="img" aria-label="Small overhead LEGO SPIKE Prime Advanced Driving Base chasing the cursor">
+          <ellipse cx="120" cy="153" rx="86" ry="10" fill="hsl(var(--foreground) / .2)" />
+          <circle cx="50" cy="90" r="35" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <path d="M50 57 A33 33 0 0 1 50 123" fill="none" stroke="#13b8ca" strokeWidth="12" />
+          <circle cx="50" cy="90" r="17" fill="#111827" stroke="#13b8ca" strokeWidth="4" />
+          <path d="M50 76 V104 M36 90 H64" stroke="#d70b87" strokeWidth="5" strokeLinecap="round" />
+          <circle cx="190" cy="90" r="35" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <path d="M190 57 A33 33 0 0 1 190 123" fill="none" stroke="#13b8ca" strokeWidth="12" />
+          <circle cx="190" cy="90" r="17" fill="#111827" stroke="#13b8ca" strokeWidth="4" />
+          <path d="M190 76 V104 M176 90 H204" stroke="#d70b87" strokeWidth="5" strokeLinecap="round" />
+          <rect x="53" y="39" width="134" height="102" rx="16" fill="#111827" transform="translate(4 6)" />
+          <rect x="53" y="33" width="134" height="102" rx="16" fill="#d70b87" stroke="hsl(var(--foreground))" strokeWidth="6" />
+          <rect x="62" y="41" width="116" height="12" rx="6" fill="#f23aa0" />
+          <rect x="62" y="115" width="116" height="12" rx="6" fill="#f23aa0" />
+          <rect x="77" y="43" width="86" height="82" rx="11" fill="#f8f4e8" stroke="hsl(var(--foreground))" strokeWidth="6" />
+          <rect x="82" y="94" width="76" height="25" rx="4" fill="#f3c323" />
+          <circle cx="120" cy="63" r="9" fill="#d8d3c6" stroke="hsl(var(--foreground))" strokeWidth="4" />
+          <circle cx="120" cy="63" r="3" fill="#111827" />
+          <rect x="43" y="63" width="15" height="54" rx="6" fill="#11b7c9" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <rect x="182" y="63" width="15" height="54" rx="6" fill="#11b7c9" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <rect x="73" y="20" width="94" height="13" rx="6" fill="#d70b87" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <rect x="73" y="135" width="94" height="13" rx="6" fill="#d70b87" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <circle cx="65" cy="26" r="6" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="175" cy="26" r="6" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="65" cy="142" r="6" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="175" cy="142" r="6" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="76" cy="57" r="7" fill="#c6cbd1" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="164" cy="57" r="7" fill="#c6cbd1" stroke="hsl(var(--foreground))" strokeWidth="3" />
         </svg>
       </div>}
       <button type="button" onClick={toggleRobot} aria-pressed={isOn} className="pointer-events-auto fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-xl border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] px-3 py-2 font-mono-custom text-[10px] font-medium shadow-[4px_4px_0_hsl(var(--foreground))] transition-transform hover:-translate-y-0.5" title={isOn ? 'Deactivate the robot' : 'Activate the robot'}>
