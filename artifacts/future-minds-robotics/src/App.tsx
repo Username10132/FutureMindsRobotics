@@ -63,17 +63,25 @@ function Logo() {
 
 type Point = { x: number; y: number };
 type TrackSegment = { id: number; leftStart: Point; leftEnd: Point; rightStart: Point; rightEnd: Point; born: number; opacity: number };
+type RobotMode = 'on' | 'returning' | 'parked';
 
 function ChasingRobot() {
   const [bot, setBot] = useState({ x: 0, y: 0, angle: 0, ready: false });
+  const [mode, setMode] = useState<RobotMode>('on');
   const [tracks, setTracks] = useState<TrackSegment[]>([]);
   const currentRef = useRef<Point>({ x: 0, y: 0 });
   const targetRef = useRef<Point>({ x: 0, y: 0 });
+  const pointerRef = useRef<Point>({ x: 0, y: 0 });
+  const startRef = useRef<Point>({ x: 0, y: 0 });
   const trackRef = useRef<TrackSegment[]>([]);
   const headingRef = useRef(0);
+  const enabledRef = useRef(true);
+  const modeRef = useRef<RobotMode>('on');
 
   useEffect(() => {
-    const start = { x: window.innerWidth * 0.73, y: window.innerHeight * 0.43 };
+    const start = { x: window.innerWidth * 0.73, y: window.scrollY + window.innerHeight * 0.43 };
+    startRef.current = start;
+    pointerRef.current = { x: start.x, y: start.y - window.scrollY };
     currentRef.current = start;
     targetRef.current = start;
     setBot({ ...start, angle: 0, ready: true });
@@ -82,24 +90,28 @@ function ChasingRobot() {
     let nextId = 0;
     let lastPaint = 0;
     const handlePointerMove = (event: PointerEvent) => {
-      targetRef.current = { x: event.clientX, y: event.clientY };
+      pointerRef.current = { x: event.clientX, y: event.clientY };
+      if (enabledRef.current) targetRef.current = { x: event.clientX + window.scrollX, y: event.clientY + window.scrollY };
+    };
+    const handleScroll = () => {
+      if (enabledRef.current) targetRef.current = { x: pointerRef.current.x + window.scrollX, y: pointerRef.current.y + window.scrollY };
     };
     const update = (now: number) => {
       const current = currentRef.current;
-      const target = targetRef.current;
+      const target = enabledRef.current ? targetRef.current : startRef.current;
       const dx = target.x - current.x;
       const dy = target.y - current.y;
       const distance = Math.hypot(dx, dy);
       let moved = 0;
 
       if (distance > 0.2) {
-        const step = Math.min(8, distance * 0.085);
+        const step = Math.min(5.2, distance * 0.055);
         const next = { x: current.x + (dx / distance) * step, y: current.y + (dy / distance) * step };
         const moveX = next.x - current.x;
         const moveY = next.y - current.y;
         moved = Math.hypot(moveX, moveY);
         const normal = { x: -moveY / moved, y: moveX / moved };
-        const wheelGap = 7;
+        const wheelGap = window.innerWidth < 640 ? 34 : 45;
         trackRef.current.push({
           id: nextId++,
           leftStart: { x: current.x + normal.x * wheelGap, y: current.y + normal.y * wheelGap },
@@ -114,6 +126,10 @@ function ChasingRobot() {
         headingRef.current = Math.atan2(moveY, moveX) * (180 / Math.PI) + 90;
       }
 
+      if (!enabledRef.current && distance < 1.2 && modeRef.current !== 'parked') {
+        modeRef.current = 'parked';
+        setMode('parked');
+      }
       trackRef.current = trackRef.current.filter((segment) => now - segment.born < 900);
       const visibleTracks = trackRef.current.map((segment) => {
         const age = now - segment.born;
@@ -129,35 +145,53 @@ function ChasingRobot() {
     };
 
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
     frame = requestAnimationFrame(update);
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('scroll', handleScroll);
       cancelAnimationFrame(frame);
     };
   }, []);
 
+  const toggleRobot = () => {
+    const nextEnabled = !enabledRef.current;
+    enabledRef.current = nextEnabled;
+    if (nextEnabled) {
+      modeRef.current = 'on';
+      setMode('on');
+      targetRef.current = { x: pointerRef.current.x + window.scrollX, y: pointerRef.current.y + window.scrollY };
+    } else {
+      modeRef.current = 'returning';
+      setMode('returning');
+      targetRef.current = startRef.current;
+    }
+  };
+  const isOn = mode === 'on';
+  const status = isOn ? 'BOT ON · FOLLOWING CURSOR' : mode === 'returning' ? 'BOT OFF · RETURNING' : 'BOT OFF · PARKED AT START';
+
   return (
     <>
-      <svg className="pointer-events-none fixed inset-0 z-20 h-full w-full overflow-visible" aria-hidden="true">
+      <svg className="pointer-events-none absolute inset-0 z-20 h-full w-full overflow-visible" aria-hidden="true">
         {tracks.map((segment) => <g key={segment.id} opacity={segment.opacity}>
-          <line x1={segment.leftStart.x} y1={segment.leftStart.y} x2={segment.leftEnd.x} y2={segment.leftEnd.y} stroke="hsl(var(--foreground) / .48)" strokeWidth="5" strokeLinecap="round" />
-          <line x1={segment.rightStart.x} y1={segment.rightStart.y} x2={segment.rightEnd.x} y2={segment.rightEnd.y} stroke="hsl(var(--foreground) / .48)" strokeWidth="5" strokeLinecap="round" />
+          <line x1={segment.leftStart.x} y1={segment.leftStart.y} x2={segment.leftEnd.x} y2={segment.leftEnd.y} stroke="hsl(var(--foreground) / .48)" strokeWidth="4" strokeLinecap="round" />
+          <line x1={segment.rightStart.x} y1={segment.rightStart.y} x2={segment.rightEnd.x} y2={segment.rightEnd.y} stroke="hsl(var(--foreground) / .48)" strokeWidth="4" strokeLinecap="round" />
         </g>)}
       </svg>
-      {bot.ready && <div className="pointer-events-none fixed left-0 top-0 z-30" style={{ left: bot.x, top: bot.y, transform: `translate(-50%, -50%) rotate(${bot.angle}deg)` }}>
+      {bot.ready && <div className="pointer-events-none absolute left-0 top-0 z-30" style={{ left: bot.x, top: bot.y, transform: `translate(-50%, -50%) rotate(${bot.angle}deg)` }}>
         <svg viewBox="0 0 180 140" className="h-auto w-28 overflow-visible sm:w-36" role="img" aria-label="Small overhead LEGO SPIKE Prime driving base chasing the cursor">
           <ellipse cx="90" cy="118" rx="58" ry="8" fill="hsl(var(--foreground) / .2)" />
-          <circle cx="35" cy="70" r="28" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="4" />
-          <circle cx="35" cy="70" r="20" fill="#12b7ca" stroke="#0e8e9f" strokeWidth="4" />
-          <circle cx="35" cy="70" r="10" fill="#111827" />
-          <circle cx="145" cy="70" r="28" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="4" />
-          <circle cx="145" cy="70" r="20" fill="#12b7ca" stroke="#0e8e9f" strokeWidth="4" />
-          <circle cx="145" cy="70" r="10" fill="#111827" />
-          <rect x="30" y="28" width="120" height="84" rx="12" fill="#d70b87" stroke="hsl(var(--foreground))" strokeWidth="5" />
-          <rect x="37" y="34" width="106" height="10" rx="5" fill="#f2349d" />
-          <rect x="37" y="96" width="106" height="10" rx="5" fill="#f2349d" />
-          <circle cx="45" cy="27" r="5" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
-          <circle cx="135" cy="27" r="5" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="24" cy="70" r="32" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="4" />
+          <circle cx="24" cy="70" r="24" fill="#12b7ca" stroke="#0e8e9f" strokeWidth="4" />
+          <circle cx="24" cy="70" r="11" fill="#111827" />
+          <circle cx="156" cy="70" r="32" fill="#111827" stroke="hsl(var(--foreground))" strokeWidth="4" />
+          <circle cx="156" cy="70" r="24" fill="#12b7ca" stroke="#0e8e9f" strokeWidth="4" />
+          <circle cx="156" cy="70" r="11" fill="#111827" />
+          <rect x="36" y="28" width="108" height="84" rx="12" fill="#d70b87" stroke="hsl(var(--foreground))" strokeWidth="5" />
+          <rect x="43" y="34" width="94" height="10" rx="5" fill="#f2349d" />
+          <rect x="43" y="96" width="94" height="10" rx="5" fill="#f2349d" />
+          <circle cx="47" cy="27" r="5" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
+          <circle cx="133" cy="27" r="5" fill="#ef3b32" stroke="hsl(var(--foreground))" strokeWidth="3" />
           <rect x="59" y="39" width="62" height="62" rx="9" fill="#f8f4e8" stroke="hsl(var(--foreground))" strokeWidth="5" />
           <rect x="64" y="77" width="52" height="19" rx="3" fill="#f3c323" />
           <circle cx="90" cy="55" r="7" fill="#d8d3c6" stroke="hsl(var(--foreground))" strokeWidth="3" />
@@ -167,6 +201,11 @@ function ChasingRobot() {
           <rect x="64" y="18" width="52" height="9" rx="4" fill="#f3c323" stroke="hsl(var(--foreground))" strokeWidth="3" />
         </svg>
       </div>}
+      <button type="button" onClick={toggleRobot} aria-pressed={isOn} className="pointer-events-auto fixed bottom-5 right-5 z-50 inline-flex items-center gap-2 rounded-xl border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] px-3 py-2 font-mono-custom text-[10px] font-medium shadow-[4px_4px_0_hsl(var(--foreground))] transition-transform hover:-translate-y-0.5" title={isOn ? 'Deactivate the robot' : 'Activate the robot'}>
+        <span className={`inline-block h-2 w-2 rounded-full ${isOn ? 'bg-[hsl(var(--primary))]' : 'bg-[hsl(var(--accent))]'}`} />
+        <span className="sm:hidden">{isOn ? 'ON · TURN OFF' : mode === 'returning' ? 'OFF · RETURNING' : 'OFF · TURN ON'}</span>
+        <span className="hidden sm:inline">{status}</span>
+      </button>
     </>
   );
 }
@@ -179,9 +218,7 @@ function HeroDriveField() {
       <span className="float-slow absolute left-[8%] top-[24%] h-4 w-4 rounded-sm bg-[hsl(var(--accent))] shadow-[3px_3px_0_hsl(var(--foreground))]" />
       <span className="float-slower absolute right-[12%] top-[13%] h-6 w-6 rotate-12 rounded-full border-4 border-[hsl(var(--secondary))]" />
       <span className="float-slow absolute bottom-[18%] left-[17%] h-5 w-5 rotate-45 bg-[hsl(var(--primary))]" />
-      <div className="absolute bottom-[9%] right-[2%] rounded-xl border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] px-3 py-2 font-mono-custom text-[10px] font-medium shadow-[4px_4px_0_hsl(var(--foreground))]">
-        <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />SPIKE PRIME / DRIVE BASE
-      </div>
+      <div className="absolute bottom-[9%] right-[2%] font-mono-custom text-[10px] tracking-[.12em] text-[hsl(var(--foreground)/.58)]">POINT + MOVE / DRIVE BASE</div>
     </div>
   );
 }
@@ -261,7 +298,7 @@ function Home() {
   const closeMenu = () => setMenuOpen(false);
   const openModal = (kind: Exclude<ModalKind, null>) => { setModal(kind); setMenuOpen(false); };
   return (
-    <div className="site-shell min-h-[100dvh] bg-[hsl(var(--background))]" id="top">
+    <div className="site-shell relative min-h-[100dvh] bg-[hsl(var(--background))]" id="top">
       <header className="absolute left-0 right-0 top-0 z-40">
         <nav className="section-wrap flex h-20 items-center justify-between" aria-label="Main navigation">
           <Logo />
