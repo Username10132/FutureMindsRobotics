@@ -284,6 +284,7 @@ function Home() {
           </div>
         </div>}
       </header>
+      <ChasingRobot />
 
       <main>
         <section className="noisy relative overflow-hidden bg-[hsl(var(--secondary))] pb-16 pt-32 sm:pb-20 sm:pt-40" aria-labelledby="hero-title">
@@ -300,7 +301,7 @@ function Home() {
               </div>
               <div className="mt-12 flex items-center gap-3 font-mono-custom text-[10px] tracking-[.08em] text-[hsl(var(--foreground)/.65)]"><span className="flex -space-x-2">{['M', 'A', 'J', 'K'].map((letter, index) => <span key={letter} className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-[hsl(var(--secondary))] text-xs font-bold ${index % 2 ? 'bg-[hsl(var(--primary))]' : 'bg-[hsl(var(--accent))]'}`}>{letter}</span>)}</span><span>BUILT BY STUDENTS<br />FOR CURIOUS MINDS</span></div>
             </div>
-            <RobotIllustration />
+            <HeroDriveField />
           </div>
           <div className="mt-10 border-y-2 border-[hsl(var(--foreground)/.15)] py-4">
             <div className="flex w-max animate-[marquee_24s_linear_infinite] gap-10 font-mono-custom text-[10px] tracking-[.16em] text-[hsl(var(--foreground)/.7)]"><span>BUILD · TEST · REPEAT</span><span>✦</span><span>ASK BETTER QUESTIONS</span><span>✦</span><span>BUILD · TEST · REPEAT</span><span>✦</span><span>ASK BETTER QUESTIONS</span><span>✦</span><span>BUILD · TEST · REPEAT</span></div>
