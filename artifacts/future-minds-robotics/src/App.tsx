@@ -329,7 +329,7 @@ function Home() {
           <div className="absolute -right-20 top-20 h-[450px] w-[450px] rounded-full border border-[hsl(var(--foreground)/.12)]" />
           <div className="section-wrap relative grid items-center gap-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-4">
             <div className="max-w-2xl">
-              <div className="mb-7 flex items-center gap-3 font-mono-custom text-[10px] font-medium tracking-[.12em]"><span className="h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />A STUDENT-LED NONPROFIT · EST. 2023</div>
+              <div className="mb-7 flex items-center gap-3 font-mono-custom text-[10px] font-medium tracking-[.12em]"><span className="h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />A STUDENT-LED NONPROFIT · EST. 2026</div>
               <h1 id="hero-title" className="font-display text-balance text-[clamp(3.7rem,9vw,7.8rem)] font-bold leading-[.86] tracking-[-.08em]">Make room<br /><span className="text-[hsl(var(--primary))]">for wonder.</span></h1>
               <p className="mt-8 max-w-lg text-lg leading-relaxed text-[hsl(var(--foreground)/.78)] sm:text-xl">We are a student-led nonprofit where high school mentors help grades 4–8 turn “what if?” into working code, clever machines, and the confidence to keep going.</p>
               <div className="mt-9 flex flex-wrap items-center gap-4">
