@@ -26,6 +26,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import logoImage from '@assets/future-minds-robotics-logo-clean.png';
+import hassanPhoto from '@assets/hassan-zaanoun-portrait-clean.jpg';
 import workshopImage from '../attached_assets/robotics-workshop.jpg';
 
 const queryClient = new QueryClient();
@@ -303,6 +304,7 @@ function Home() {
   const storyRef = useReveal();
   const experienceRef = useReveal();
   const teamRef = useReveal();
+  const aboutRef = useReveal();
   const supportRef = useReveal();
   const closeMenu = () => setMenuOpen(false);
   const openModal = (kind: Exclude<ModalKind, null>) => { setModal(kind); setMenuOpen(false); };
@@ -315,6 +317,7 @@ function Home() {
             <a href="#why" className="nav-link" data-testid="link-nav-why">Why it matters</a>
             <a href="#experience" className="nav-link" data-testid="link-nav-experience">The experience</a>
             <a href="#team" className="nav-link" data-testid="link-nav-team">Team 62281</a>
+            <a href="#about" className="nav-link" data-testid="link-nav-about">About us</a>
             <a href="https://hcb.hackclub.com/donations/start/futureminds-robotics" target="_blank" rel="noreferrer" className="nav-link" data-testid="link-nav-donate">Donate</a>
             <button onClick={() => openModal('volunteer')} className="inline-flex items-center gap-2 rounded-full bg-[hsl(var(--foreground))] px-4 py-2.5 text-[hsl(var(--card))] transition-transform hover:-translate-y-0.5" data-testid="button-nav-join">Get involved <ArrowUpRight size={15} /></button>
           </div>
@@ -325,6 +328,7 @@ function Home() {
             <a href="#why" onClick={closeMenu} className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-why">Why it matters</a>
             <a href="#experience" onClick={closeMenu} className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-experience">The experience</a>
             <a href="#team" onClick={closeMenu} className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-team">Team 62281</a>
+            <a href="#about" onClick={closeMenu} className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-about">About us</a>
              <a href="https://hcb.hackclub.com/donations/start/futureminds-robotics" target="_blank" rel="noreferrer" className="rounded-xl px-4 py-3 font-semibold hover:bg-[hsl(var(--muted))]" data-testid="link-mobile-donate">Donate</a>
             <button onClick={() => openModal('volunteer')} className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-[hsl(var(--primary))] px-4 py-3 font-semibold text-[hsl(var(--primary-foreground))]" data-testid="button-mobile-join">Get involved <ArrowUpRight size={15} /></button>
           </div>
@@ -435,10 +439,46 @@ function Home() {
           </div>
         </section>
 
+        <section id="about" className="bg-[hsl(var(--background))] py-24 sm:py-32" aria-labelledby="about-title">
+          <div className="section-wrap">
+            <SectionHeading eyebrow="05 / About us" title={<>The people<br /><span className="text-[hsl(var(--primary))]">behind the build.</span></>} body="Meet the two founders behind Future Minds Robotics." />
+            <div ref={aboutRef} className="reveal mt-14 grid gap-5 sm:grid-cols-2">
+              <article itemScope itemType="https://schema.org/Person" className="relative overflow-hidden rounded-[1.7rem] border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--secondary))] p-7 shadow-[6px_6px_0_hsl(var(--foreground))] sm:p-10">
+                <meta itemProp="worksFor" content="Future Minds Robotics" />
+                 <meta itemProp="jobTitle" content="Founder and CEO" />
+                <div className="flex items-start justify-between">
+                   <a href="https://www.linkedin.com/in/hassanhfr/" target="_blank" rel="noreferrer" itemProp="image" aria-label="View Hassan Zaanoun on LinkedIn" className="block overflow-hidden rounded-2xl border-2 border-[hsl(var(--foreground))] shadow-[4px_4px_0_hsl(var(--foreground))] transition-transform hover:-translate-y-1">
+                     <img src={hassanPhoto} alt="Hassan Zaanoun, Founder and CEO of Future Minds Robotics" className="h-24 w-24 object-cover" />
+                   </a>
+                  <span className="font-mono-custom text-[10px] tracking-[.14em]">FOUNDING TEAM / 01</span>
+                </div>
+                <div className="mt-20">
+                  <p className="eyebrow text-[hsl(var(--primary))]">Founder + CEO</p>
+                  <h3 itemProp="name" className="mt-3 font-display text-4xl font-bold tracking-[-.06em] sm:text-5xl">Hassan Zaanoun</h3>
+                   <p itemProp="description" className="mt-4 max-w-sm text-sm leading-relaxed text-[hsl(var(--foreground)/.72)]">Hassan Zaanoun is a student at Monroe Township High School and a Robotics Engineer Intern at Human Friendly Robotics. He is a member of VEX V5 Team 96138A Alchemy, the main coach of FLL Robotics Team 62281, and the Founder and CEO of Future Minds Robotics.</p>
+                   <a href="https://www.linkedin.com/in/hassanhfr/" target="_blank" rel="noreferrer" itemProp="sameAs" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[hsl(var(--foreground))] underline decoration-[hsl(var(--primary)/.55)] underline-offset-4 transition-colors hover:text-[hsl(var(--primary))]" data-testid="link-hassan-linkedin">View Hassan on LinkedIn <ArrowUpRight size={16} /></a>
+                </div>
+              </article>
+              <article itemScope itemType="https://schema.org/Person" className="relative overflow-hidden rounded-[1.7rem] border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--card))] p-7 shadow-[6px_6px_0_hsl(var(--foreground))] sm:p-10">
+                <meta itemProp="worksFor" content="Future Minds Robotics" />
+                 <meta itemProp="jobTitle" content="Co-founder" />
+                <div className="flex items-start justify-between">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-[hsl(var(--foreground))] bg-[hsl(var(--accent))] font-display text-2xl font-bold shadow-[4px_4px_0_hsl(var(--foreground))]">RS</span>
+                  <span className="font-mono-custom text-[10px] tracking-[.14em]">FOUNDING TEAM / 02</span>
+                </div>
+                <div className="mt-20">
+                  <p className="eyebrow text-[hsl(var(--primary))]">Co-founder</p>
+                  <h3 itemProp="name" className="mt-3 font-display text-4xl font-bold tracking-[-.06em] sm:text-5xl">Rayan Singer</h3>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
         <section id="get-involved" className="bg-[hsl(var(--primary))] py-24 text-[hsl(var(--primary-foreground))] sm:py-32" aria-labelledby="involved-title">
           <div className="section-wrap">
             <div ref={supportRef} className="reveal grid items-end gap-12 lg:grid-cols-[1fr_.75fr]">
-              <div><p className="eyebrow mb-5 text-[hsl(var(--secondary))]">05 / Make the circle bigger</p><h2 id="involved-title" className="font-display max-w-3xl text-balance text-5xl font-bold leading-[.92] tracking-[-.07em] sm:text-7xl">There’s more than one way to join the build.</h2></div>
+              <div><p className="eyebrow mb-5 text-[hsl(var(--secondary))]">06 / Make the circle bigger</p><h2 id="involved-title" className="font-display max-w-3xl text-balance text-5xl font-bold leading-[.92] tracking-[-.07em] sm:text-7xl">There’s more than one way to join the build.</h2></div>
               <p className="max-w-md text-lg leading-relaxed opacity-80">The work gets better when families, educators, mentors, and neighbors bring their own kind of magic.</p>
             </div>
             <div className="mt-16 grid gap-4 md:grid-cols-3">
@@ -462,7 +502,7 @@ function Home() {
         <div className="section-wrap flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
            <div><Logo /><p className="mt-5 max-w-xs text-sm leading-relaxed text-[hsl(var(--card)/.55)]">A student-led nonprofit making space for curious minds, one robot at a time.</p></div>
            <div className="flex flex-col items-start gap-5 sm:items-end">
-             <div className="flex flex-wrap gap-x-7 gap-y-3 text-sm text-[hsl(var(--card)/.7)]"><a href="#why" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-why">Why it matters</a><a href="#experience" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-experience">Experience</a><a href="#team" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-team">Team 62281</a><a href="https://hcb.hackclub.com/donations/start/futureminds-robotics" target="_blank" rel="noreferrer" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-donate">Donate</a><button onClick={() => openModal('contact')} className="hover:text-[hsl(var(--secondary))]" data-testid="button-footer-contact">Contact</button></div>
+             <div className="flex flex-wrap gap-x-7 gap-y-3 text-sm text-[hsl(var(--card)/.7)]"><a href="#why" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-why">Why it matters</a><a href="#experience" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-experience">Experience</a><a href="#team" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-team">Team 62281</a><a href="#about" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-about">About us</a><a href="https://hcb.hackclub.com/donations/start/futureminds-robotics" target="_blank" rel="noreferrer" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-donate">Donate</a><button onClick={() => openModal('contact')} className="hover:text-[hsl(var(--secondary))]" data-testid="button-footer-contact">Contact</button></div>
              <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-[hsl(var(--card)/.55)]"><a href="mailto:hzaanoun23@gmail.com" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-email">hzaanoun23@gmail.com</a><a href="tel:+16403576683" className="hover:text-[hsl(var(--secondary))]" data-testid="link-footer-phone">+1 640 357 6683</a></div>
            </div>
         </div>
