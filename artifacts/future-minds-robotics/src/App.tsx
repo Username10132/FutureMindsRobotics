@@ -26,7 +26,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import logoImage from '@assets/future-minds-robotics-logo-clean.png';
-import hassanPhoto from '@assets/hassan-zaanoun-portrait-clean.jpg';
+import hassanPhoto from '/profile.jpg';
 import workshopImage from '../attached_assets/robotics-workshop.jpg';
 
 const queryClient = new QueryClient();
